@@ -11,12 +11,14 @@
       :on-error="handleError"
       :class="{ 'is-disabled': isMaxCount }"
     >
+      <!-- 上传触发器 -->
       <div v-if="!isMaxCount" class="upload-trigger">
         <i class="pc-icon-plus"></i>
         <span>点击上传</span>
       </div>
     </pc-upload>
 
+    <!-- 文件预览列表 -->
     <div class="upload-preview" v-if="fileList.length">
       <preview-list
         :file-list="fileList"
@@ -40,11 +42,11 @@ export default {
       type: null,
       default: () => [],
     },
-    maxCount: {
+    maxCount: { // 最大上传数量
       type: Number,
       default: 1,
     },
-    maxSize: {
+    maxSize: { // 文件大小限制(字节)
       type: Number,
       default: 20 * 1024 * 1024,
     },
@@ -52,22 +54,22 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    disabled: {
+    disabled: { // 是否禁用
       type: Boolean,
       default: false,
     },
-    required: {
+    required: { // 是否必填
       type: Boolean,
       default: false,
     },
-    schema: {
+    schema: { // JSON Schema 
       type: Object,
       default: () => ({}),
     },
-    filedKey: {
+    filedKey: { // 字段标识
       type: String,
     },
-    fileTypes: {
+    fileTypes: { // 允许的文件类型
       type: String,
       default: '',
     },
@@ -182,4 +184,4 @@ export default {
   color: #8c939d;
   margin-bottom: 8px;
 }
-</style> 
+</style>

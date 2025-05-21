@@ -314,4 +314,99 @@ pre {
 ::v-deep .pc-tabs__nav-wrap::after {
   height: 1px;
 }
-</style> 
+</style>
+
+<script>
+/**
+ * 表单预览页面组件
+ * 用于实时预览配置生成的表单效果
+ * 功能：
+ * - 表单实时预览
+ * - 表单数据展示
+ * - Schema数据展示
+ */
+import VueForm from '@/components/VueFormELement/vueJsonSchemaForm.umd.min.js'
+import VueFormVant2 from '@/components/VueFormVant2/vue2-form-iview3.esm.min'
+import  { formData, jsonSchema } from './formView/index.js'
+import EventBus from '@/utils/eventBus'
+
+export default {
+  name: 'FormSchemaPage',
+  components: {
+    VueForm,
+    VueFormVant2
+  },
+  data() {
+    return {
+      activeFormType: 'element', // 当前表单类型：element-PC端，vant-移动端
+      activeTab: 'formData', // 当前数据预览标签页
+      schema: jsonSchema, // Schema配置
+      formData: JSON.parse(JSON.stringify(formData)), // 表单数据
+      originalFormData: JSON.parse(JSON.stringify(formData)), // 原始表单数据
+      formPropsPC: {
+        layoutColumn: 1, // 修改为1列布局
+        inlineFooter: true,
+        labelPosition: 'top', // 修改标签位置为top
+        labelWidth: '120px',
+        labelSuffix: ':',
+      },
+      formPropsVant: {
+        layoutColumn: 1,
+        inlineFooter: true,
+        labelPosition: 'top',
+        labelWidth: '120px',
+        labelSuffix: ':',
+      },
+      formRef: null,
+      showDataPreview: false,
+      dialogVisible: false,
+      submittedData: null
+    }
+  },
+  computed: {
+    formProps() {
+      // 根据当前选择的表单类型返回对应的表单配置
+      return this.activeFormType === 'element' ? this.formPropsPC : this.formPropsVant;
+    }
+  },
+  watch: {
+    activeFormType(newVal, oldVal) {
+      // 可以在这里处理表单类型切换逻辑
+      console.log(`表单类型从 ${oldVal} 切换到 ${newVal}`);
+    }
+  },
+  created() {
+    // 监听配置更新事件
+    EventBus.$on('schema-updated', this.handleSchemaUpdated)
+  },
+  beforeDestroy() {
+    // 组件销毁前移除事件监听
+    EventBus.$off('schema-updated', this.handleSchemaUpdated)
+  },
+  methods: {
+    handleFormMounted(getForm, formData) {
+      this.formRef = getForm
+    },
+    handleSchemaUpdated(newSchema) {
+      // 更新表单架构
+      if (newSchema) {
+        this.schema = newSchema
+        // 自动切换到Schema标签，显示更新后的Schema
+        if (this.showDataPreview) {
+          this.activeTab = 'schema'
+        }
+      }
+    },
+    resetForm() {
+      // 重置表单数据为初始值
+      this.formData = JSON.parse(JSON.stringify(this.originalFormData))
+      this.$message.success('表单已重置')
+    },
+    saveData() {
+      console.log('表单数据:', this.formData)
+      this.submittedData = JSON.parse(JSON.stringify(this.formData))
+      this.dialogVisible = true
+    }
+  }
+}
+</script>

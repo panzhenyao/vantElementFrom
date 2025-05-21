@@ -1,3 +1,11 @@
+/**
+ * 配置抽屉组件
+ * 用于编辑表单字段和区块的配置信息
+ * 支持:
+ * - 字段基础配置
+ * - 区块属性配置
+ * - 自定义HR属性配置
+ */
 <template>
   <pc-drawer
     :title="configType === 'block' ? '区块配置' : '字段配置'"
@@ -8,26 +16,25 @@
     append-to-body
   >
     <div class="drawer-content">
+      <!-- 配置表单 -->
       <pc-form 
         :model="formData" 
         label-width="100px" 
         label-position="top"
         ref="configForm"
       >
-        <!-- 基础配置部分，通用于区块和字段 -->
+        <!-- 基础配置部分 -->
         <pc-form-item label="标识编码" prop="code" :rules="[
           { required: true, message: '请输入标识编码', trigger: 'blur' },
           { pattern: configType === 'block' ? /^[A-Z0-9_]+$/ : /^[a-zA-Z0-9_]+$/, 
-            message: configType === 'block' ? '区块编码只能包含大写字母、数字和下划线' : '字段编码只能包含字母、数字和下划线', 
-            trigger: 'blur' }
+            message: configType === 'block' ? '仅允许大写字母、数字和下划线' : '仅允许字母、数字和下划线', 
+            trigger: 'blur' 
+          }
         ]">
-          <pc-input 
-            v-model="formData.code" 
-            :placeholder="configType === 'block' ? '请输入区块编码(大写字母数字下划线)' : '请输入字段编码'"
-          ></pc-input>
+          <pc-input v-model="formData.code" :placeholder="configType === 'block' ? '请输入区块编码（大写）' : '请输入字段编码'"></pc-input>
         </pc-form-item>
-        
-        <!-- 区块配置的特有字段 -->
+
+        <!-- 区块配置 -->
         <template v-if="configType === 'block'">
           <pc-form-item label="区块标题" prop="config.title">
             <pc-input v-model="formData.config.title" placeholder="请输入区块标题"></pc-input>
@@ -48,7 +55,7 @@
           </pc-form-item>
         </template>
         
-        <!-- 字段配置的特有字段 -->
+        <!-- 字段配置 -->
         <template v-else>
           <!-- 基础信息 -->
           <pc-form-item label="字段标题" prop="fieldConfig.title">
@@ -237,10 +244,8 @@
           </template>
         </template>
 
-        <!-- 自定义HR属性配置部分，通用于区块和字段，放置在表单最后 -->
-        <div class="group-title">自定义HR属性配置</div>
-        <pc-form-item label="开发者扩展属性">
-          <div class="tips-text hr-tips-text">添加hr开头的自定义属性，用于开发者在特殊组件中实现个性化功能</div>
+        <!-- HR属性配置部分 -->
+        <pc-form-item label="HR属性">
           <div class="hr-property-container">
             <div v-for="(prop, index) in hrProperties" :key="index" class="hr-property-item">
               <div class="hr-property-label">hr</div>
@@ -268,6 +273,7 @@
         </pc-form-item>
       </pc-form>
       
+      <!-- 底部按钮 -->
       <div class="drawer-footer">
         <pc-button @click="handleClose">取消</pc-button>
         <pc-button type="primary" @click="handleSubmit">确定</pc-button>
@@ -286,24 +292,24 @@ export default {
       type: Boolean,
       default: false
     },
-    configType: {
+    configType: { // 配置类型：field-字段配置，block-区块配置
       type: String,
-      default: 'field', // 'field' 或 'block'
+      default: 'field',
       validator: value => ['field', 'block'].includes(value)
     },
-    componentType: {
+    componentType: { // 组件类型
       type: String,
       default: ''
     },
-    currentConfig: {
+    currentConfig: { // 当前配置
       type: Object,
       default: () => ({})
     },
-    cursor: {
+    cursor: { // 光标位置信息
       type: Object,
       default: null
     },
-    formConfigStr: {
+    formConfigStr: { // 表单配置字符串
       type: String,
       default: ''
     }
@@ -804,4 +810,4 @@ export default {
   margin-bottom: 10px;
   font-style: italic;
 }
-</style> 
+</style>

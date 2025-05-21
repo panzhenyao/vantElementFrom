@@ -1,3 +1,12 @@
+/**
+ * 表单配置页面组件
+ * 提供表单配置的可视化编辑界面
+ * 功能：
+ * - JSON配置编辑器
+ * - 组件拖拽配置
+ * - 配置属性编辑
+ * - 实时预览
+ */
 <template>
   <div class="config-editor">
     <h2>表单配置</h2>
@@ -95,7 +104,7 @@ export default {
   },
   data() {
     return {
-      formConfigStr: JSON.stringify(formConfig, null, 2),
+      formConfigStr: JSON.stringify(formConfig, null, 2), // 表单配置JSON字符串
       cmOptions: {
         tabSize: 2,
         mode: 'application/json',
@@ -109,7 +118,7 @@ export default {
         allowDropFileTypes: [], // 不允许任何类型的文件拖放
         readOnly: true, // 默认为只读模式，禁止编辑
       },
-      isEditMode: false, // 默认处于拖拽模式
+      isEditMode: false, // 是否处于编辑模式
       lastValidConfig: null,
       loading: false,
       retryCount: 0,
